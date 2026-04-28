@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>회사원 키우기 - 도감</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="game">
+
+  <div class="top">
+    <div>
+      <h1>회사원 키우기</h1>
+      <p>방치형 강화 RPG</p>
+    </div>
+    <button id="resetBtn" class="reset">초기화</button>
+  </div>
+
+  <div class="money-box">
+    <span>보유 자산</span>
+    <h2 id="money">0원</h2>
+  </div>
+
+  <div class="character-box">
+    <div class="character" id="character">🧑‍💼</div>
+    <strong id="rankName">신입사원</strong>
+    <span>강화 +<b id="level">0</b></span>
+  </div>
+
+  <div class="info">
+    <p>클릭 수익 <b id="clickIncome">100</b></p>
+    <p>자동 수익 <b id="autoIncome">0</b></p>
+    <p>성공률 <b id="rate">90</b>%</p>
+  </div>
+
+  <div class="tabs">
+    <button id="gameTab" class="tab active">게임</button>
+    <button id="bookTab" class="tab">도감 <span id="bookCount">1/6</span></button>
+  </div>
+
+  <div id="gamePanel" class="panel">
+    <div class="buttons">
+      <button id="workBtn">💼 일하기</button>
+      <button id="enhanceBtn">⚒️ 강화<br><small><span id="cost">1000</span>원</small></button>
+      <button id="autoBtn">🤖 자동수익<br><small><span id="autoCost">2000</span>원</small></button>
+    </div>
+  </div>
+
+  <div id="bookPanel" class="panel hidden">
+    <div id="collection" class="collection"></div>
+  </div>
+
+  <p id="msg">강화하면 새로운 직급이 도감에 등록됩니다.</p>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
