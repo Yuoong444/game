@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>마법봉 강화 RPG</title>
+<link rel="stylesheet" href="style.css?v=46" />
+</head>
+<body>
+
+<div id="effectLayer" class="effect-layer"></div>
+
+<div id="helpModal" class="help-modal" aria-hidden="true">
+  <div class="help-backdrop" id="helpBackdrop"></div>
+  <section class="help-card" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <button id="helpCloseBtn" class="help-close" type="button" aria-label="도움말 닫기">×</button>
+    <h2 id="helpTitle">❔ 게임 도움말</h2>
+    <div class="help-grid">
+      <div class="help-item"><b>1. 골드 채굴</b><span>가운데 마법봉을 터치/클릭하면 골드를 얻습니다. 등급이 높을수록 클릭 골드가 증가합니다.</span></div>
+      <div class="help-item"><b>2. 강화</b><span>골드를 사용해 강화합니다. 강화 단계가 오르면 클릭 수익, 자동 수익, 도감 해금이 좋아집니다.</span></div>
+      <div class="help-item"><b>3. 보석 얻는 법</b><span>강화 5단계마다 보석을 얻고, 성장 단계 3의 배수 보상으로도 얻습니다. 채굴/마력석 자동 골드 수익 중에도 낮은 확률로 보석이 드랍되며, 자동 골드가 일정량 누적되면 확정 보석을 얻습니다.</span></div>
+      <div class="help-item"><b>4. 마력석</b><span>강화 성공, 뽑기 중복 보상, 성장 보상으로 얻습니다. 마력석을 모으면 자동 수익이 올라가고, 자동 수익 중에도 보석 획득 기회가 생깁니다.</span></div>
+      <div class="help-item"><b>5. 뽑기/가방</b><span>보석으로 마법봉을 뽑고, 가방에서 원하는 마법봉을 꺼내 장착할 수 있습니다.</span></div>
+    </div>
+    <button id="helpCloseBottomBtn" class="help-close-bottom" type="button">도움말 닫기</button>
+  </section>
+</div>
+
+<div class="app">
+<header class="top">
+  <button id="resetBtn" class="top-reset-btn" type="button" aria-label="초기화">↻ 초기화</button>
+  <div class="title-wrap">
+    <p>MAGIC WAND RPG</p>
+    <h1>마법봉 강화 어드벤처</h1>
+  </div>
+  <button id="mobileMenuBtn" class="mobile-menu-btn header-menu-btn" type="button" aria-label="메뉴 열기">☰<span>메뉴</span></button>
+</header>
+
+  <main class="screen">
+    <section class="left-panel">
+      <div class="resources hud-resources">
+        <div>
+          <span>🪙 골드</span>
+          <b id="gold">0</b>
+        </div>
+        <div>
+          <span>💎 보석</span>
+          <b id="gem">100</b>
+        </div>
+        <div>
+          <span>🔮 마력석</span>
+          <b id="stone">0</b>
+        </div>
+      </div>
+
+      <div class="wand-card">
+        <div class="wand-headline">
+          <div>
+            <span>현재 장착</span>
+            <h2 id="wandName">견습의 나무 지팡이</h2>
+          </div>
+          <strong id="gradeBadge" class="grade grade-e">E</strong>
+        </div>
+
+        <div id="stars" class="stars">★☆☆☆☆</div>
+
+        <div class="wand-stage" id="mineArea" role="button" tabindex="0" aria-label="마법봉을 눌러 골드 채굴">
+          <div class="tap-hint">마법봉 터치로 골드 채굴!</div>
+          <div class="drop-badge" id="dropBadge" aria-label="보석 드랍률">
+            <small>💎 보석 드랍</small>
+            <b id="gemDropRate">2.5%</b>
+          </div>
+          <div class="side-bonus auto-status"><b>AUTO</b><small>ON</small></div>
+          <div class="drop-badge auto-gem-badge" aria-label="자동 보석 드랍률">
+            <small>🔮 자동획득</small>
+            <b id="autoGemDropRate">1.2%</b>
+          </div>
+          <div class="side-bonus click-status"><b id="clickBonusBadge">x1.0</b><small>클릭 보너스</small></div>
+          <div class="wand-aura"></div>
+          <div class="magic-ring magic-ring-a"></div>
+          <div class="magic-ring magic-ring-b"></div>
+          <div class="star-field" aria-hidden="true"></div>
+          <div class="circle"></div>
+          <div id="wand" class="wand weapon-frame">
+            <img id="wandImg" class="weapon-img" src="img/wand_e.png" alt="현재 마법봉 이미지" />
+          </div>
+        </div>
+      </div>
+
+      <div class="stats compact-stats">
+        <div><span>클릭</span><b id="clickIncome">10</b><small id="gradeBonusText">등급 x1.0</small></div>
+        <div><span>자동</span><b id="autoIncome">0</b></div>
+        <div><span>보석획득까지</span><b id="autoGemPity">-</b></div>
+        <div><span>성공률</span><b><span id="successRate">90</span>%</b></div>
+      </div>
+
+      <div class="bottom-actions action-row">
+        <button id="enhanceBtn" class="enhance"><b>⚡</b><span>강화</span><small><span id="enhanceCostMini">100</span> 골드</small></button>
+        <button id="autoBtn" class="auto"><b>🔮</b><span>마력석</span><small><span id="autoCost">500</span> 골드</small></button>
+      </div>
+      <button id="workBtn" class="hidden-mine-btn" type="button">채굴</button>
+    </section>
+
+    <section class="right-panel">
+      <nav class="tabs" id="mobileTabs">
+        <button id="tabEnhance" class="tab active"><i>🪄</i><span>무기정보</span></button>
+        <button id="tabCollection" class="tab"><i>📖</i><span>도감</span></button>
+        <button id="tabOption" class="tab"><i>✨</i><span>옵션</span></button>
+        <button id="tabSummon" class="tab"><i>🎁</i><span>뽑기</span></button>
+        <button id="tabManage" class="tab"><i>🎒</i><span>가방</span></button>
+        <button id="menuHelpBtn" class="tab menu-help-tab" type="button"><i>❔</i><span>도움말</span></button>
+      </nav>
+
+      <section id="enhancePanel" class="panel active main-status-panel">
+        <div class="enhance-box main-weapon-box">
+          <h2>🪄 현재 무기 정보</h2>
+          <div class="main-weapon-summary">
+            <img id="mainWeaponImg" class="main-weapon-img" src="img/wand_e.png" alt="현재 무기 이미지" />
+            <div><span class="main-label">장착 중</span><strong id="mainWandName">견습의 나무 지팡이</strong><em id="mainStars">★☆☆☆☆</em></div>
+            <b id="mainGrade" class="grade grade-e">E</b>
+          </div>
+          <div class="line"><span>강화 단계</span><b>+<span id="level">0</span> → +<span id="nextLevel">1</span></b></div>
+          <div class="line"><span>클릭 수익</span><b><span id="mainClickIncome">10</span> 골드</b></div>
+          <div class="line"><span>자동 수익</span><b><span id="mainAutoIncome">0</span> 골드</b></div>
+          <div class="line"><span>강화 성공률</span><b><span id="mainSuccessRate">90</span>%</b></div>
+          <div class="line"><span>실패 패널티</span><b id="failPenalty">없음</b></div>
+          <div class="line"><span>강화 비용</span><b><span id="enhanceCost">100</span> 골드</b></div>
+          <div class="line"><span>등급 클릭 보너스</span><b id="gradeBonusInfo">x1.0</b></div>
+          <div class="line"><span>무기 특성</span><b id="traitInfo">입문형</b></div>
+          <div class="line"><span>랜덤 옵션</span><b id="optionSummary">없음</b></div>
+          <button id="saveBagBtn" class="bag-save-btn">🎒 현재 마법봉 가방에 저장</button>
+        </div>
+        <div id="message" class="message">골드를 모아 마법봉 강화에 도전하세요.</div>
+      </section>
+
+      <section id="collectionPanel" class="panel">
+        <div class="book-title">
+          <h2>📖 마법봉 도감</h2>
+          <b id="bookCount">1 / 19</b>
+        </div>
+        <div class="filters">
+          <button class="filter active" data-grade="ALL">전체</button>
+          <button class="filter" data-grade="E">E</button>
+          <button class="filter" data-grade="D">D</button>
+          <button class="filter" data-grade="C">C</button>
+          <button class="filter" data-grade="B">B</button>
+          <button class="filter" data-grade="A">A</button>
+          <button class="filter" data-grade="S">S</button>
+          <button class="filter" data-grade="SS">SS</button>
+          <button class="filter" data-grade="SSS">SSS</button>
+        </div>
+        <div id="collection" class="collection"></div>
+      </section>
+
+      <section id="summonPanel" class="panel">
+        <div class="enhance-box summon-box">
+          <h2>🎁 마법봉 뽑기</h2>
+          <p class="desc">보석으로 숨겨진 마법봉을 뽑아 도감에 먼저 등록할 수 있습니다.</p>
+          <div class="summon-stage" id="summonStage">
+            <div id="summonPortal" class="summon-portal">
+              <div class="portal-ring"></div>
+              <div class="portal-light"></div>
+              <div id="summonResultIcon" class="summon-result-icon">🎁</div>
+              <img id="summonResultImg" class="summon-result-img" src="img/wand_e.png" alt="뽑기 결과 이미지" />
+            </div>
+            <strong id="summonResultName">뽑기를 눌러보세요</strong>
+            <span id="summonResultDesc">1회 30보석 / 10회 270보석</span>
+          </div>
+          <div class="summon-actions">
+            <button id="summonOneBtn" class="summon-btn">1회 뽑기<br><small>30 보석</small></button>
+            <button id="summonTenBtn" class="summon-btn premium">10회 뽑기<br><small>270 보석</small></button>
+          </div>
+          <div id="summonResultList" class="summon-result-list" aria-live="polite"></div>
+          <div class="rate-box">
+            <span>등급 확률</span>
+            <b>E/D/C 50% · B/A 30% · S 12% · SS 6% · SSS 2%</b>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section id="managePanel" class="panel">
+        <div class="enhance-box grow-box">
+          <h2>🌱 성장 훈련</h2>
+          <p class="desc">마법봉을 수련시켜 성장 EXP를 모으고 보상을 받아 초반 성장을 빠르게 할 수 있습니다.</p>
+          <div class="growth-meter">
+            <div class="growth-info">
+              <span>성장 단계 <b id="growthStage">1</b></span>
+              <strong><span id="growthExp">0</span> / <span id="growthNeed">5</span> EXP</strong>
+            </div>
+            <div class="growth-bar"><i id="growthBar"></i></div>
+          </div>
+          <div class="manage-actions">
+            <button id="trainBtn" class="manage-btn">🌱 수련하기<br><small>무료 · EXP +1</small></button>
+            <button id="feedBtn" class="manage-btn premium">💎 마력 주입<br><small>마력석 5개 · EXP +10</small></button>
+          </div>
+        </div>
+
+        <div class="enhance-box sell-box">
+          <div class="book-title">
+            <h2>🎒 마법봉 가방</h2>
+            <b id="inventoryCount">1개</b>
+          </div>
+          <p class="desc">뽑기 또는 저장한 마법봉을 보관합니다. 원하는 마법봉은 꺼내기로 다시 장착할 수 있고, 장착 중이거나 잠금 설정한 마법봉은 판매할 수 없습니다.</p>
+          <div class="inventory-toolbar">
+            <select id="inventoryGradeFilter" aria-label="가방 등급 필터">
+              <option value="ALL">전체 등급</option>
+              <option value="E">E 등급</option>
+              <option value="D">D 등급</option>
+              <option value="C">C 등급</option>
+              <option value="B">B 등급</option>
+              <option value="A">A 등급</option>
+              <option value="S">S 등급</option>
+              <option value="SS">SS 등급</option>
+              <option value="SSS">SSS 등급</option>
+            </select>
+            <select id="inventorySort" aria-label="가방 정렬">
+              <option value="new">최신순</option>
+              <option value="power">전투력순</option>
+              <option value="level">강화 높은순</option>
+              <option value="grade">등급 높은순</option>
+            </select>
+            <button id="sellGradeBtn" class="manage-btn">선택 등급 판매</button>
+          </div>
+          <div class="manage-actions">
+            <button id="sellDupBtn" class="manage-btn">중복만 판매</button>
+            <button id="sellAllBtn" class="manage-btn danger">판매 가능 전체 판매</button>
+          </div>
+          <div id="inventoryList" class="inventory-list"></div>
+        </div>
+      </section>
+
+      <section id="optionPanel" class="panel">
+        <div class="enhance-box">
+          <h2>✨ 랜덤 옵션</h2>
+          <p class="desc">강화 성공 시 일정 확률로 옵션이 붙습니다.</p>
+          <div id="optionList" class="option-list"></div>
+          <button id="rerollBtn" class="reroll">보석 30개로 옵션 재설정</button>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+
+<script src="script.js?v=46"></script>
+</body>
+</html>
