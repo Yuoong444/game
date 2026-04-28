@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>마법봉 강화 RPG</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="effectLayer" class="effect-layer"></div>
+
+<div class="page">
+  <div class="app">
+
+    <header class="header">
+      <div class="profile">
+        <div class="avatar">🧙‍♂️</div>
+        <div>
+          <p>MAGIC WAND RPG</p>
+          <h1>마법봉 강화</h1>
+        </div>
+      </div>
+
+      <div class="top-menu">
+        <button id="resetBtn" class="reset">초기화</button>
+      </div>
+    </header>
+
+    <main class="layout">
+
+      <section class="left">
+        <div class="resource-row">
+          <div class="resource">
+            <span>보유 골드</span>
+            <strong id="gold">0</strong>
+          </div>
+          <div class="resource gem">
+            <span>보유 보석</span>
+            <strong id="gem">100</strong>
+          </div>
+          <div class="resource crystal">
+            <span>마력석</span>
+            <strong id="stone">0</strong>
+          </div>
+        </div>
+
+        <div class="wand-stage">
+          <div class="stage-top">
+            <div>
+              <p>현재 마법봉</p>
+              <h2 id="wandName">견습의 나무 지팡이</h2>
+            </div>
+            <div id="gradeBadge" class="grade-badge grade-e">E</div>
+          </div>
+
+          <div class="stars" id="stars">★☆☆☆☆</div>
+
+          <div class="magic-circle">
+            <div class="circle circle-a"></div>
+            <div class="circle circle-b"></div>
+            <div id="wand" class="wand">
+              <div class="wand-head"></div>
+              <div class="wand-core"></div>
+              <div class="wand-stick"></div>
+            </div>
+            <div class="spark spark1">✦</div>
+            <div class="spark spark2">✧</div>
+            <div class="spark spark3">✦</div>
+          </div>
+        </div>
+
+        <div class="buff-row">
+          <div class="buff">
+            <span>클릭 수익</span>
+            <b id="clickIncome">10</b>
+          </div>
+          <div class="buff">
+            <span>자동 수익 / 초</span>
+            <b id="autoIncome">0</b>
+          </div>
+          <div class="buff">
+            <span>강화 성공률</span>
+            <b><span id="successRate">90</span>%</b>
+          </div>
+        </div>
+      </section>
+
+      <section class="right">
+        <nav class="tabs">
+          <button id="tabEnhance" class="tab active">🪄 강화</button>
+          <button id="tabCollection" class="tab">📖 도감</button>
+          <button id="tabOption" class="tab">🎲 옵션</button>
+        </nav>
+
+        <section id="enhancePanel" class="panel active">
+          <div class="enhance-card">
+            <h2>마법봉 강화</h2>
+
+            <div class="enhance-line">
+              <span>강화 단계</span>
+              <strong>+<span id="level">0</span> → +<span id="nextLevel">1</span></strong>
+            </div>
+
+            <div class="enhance-line">
+              <span>실패 시 하락</span>
+              <strong id="failPenalty">없음</strong>
+            </div>
+
+            <div class="enhance-line">
+              <span>강화 비용</span>
+              <strong><span id="enhanceCost">100</span> 골드</strong>
+            </div>
+
+            <div class="enhance-line">
+              <span>랜덤 옵션</span>
+              <strong id="optionSummary">없음</strong>
+            </div>
+
+            <button id="enhanceBtn" class="main-button">
+              <span>⚡</span>
+              강화하기
+            </button>
+
+            <label class="check-row">
+              <input id="skipEffect" type="checkbox">
+              연출 스킵
+            </label>
+          </div>
+
+          <div class="action-row">
+            <button id="workBtn" class="sub-button gold-btn">
+              💰 골드 얻기
+            </button>
+            <button id="autoBtn" class="sub-button blue-btn">
+              🔮 자동 수익 구매<br>
+              <small><span id="autoCost">500</span> 골드</small>
+            </button>
+          </div>
+
+          <div id="message" class="message">
+            골드를 모아 마법봉 강화에 도전하세요.
+          </div>
+        </section>
+
+        <section id="collectionPanel" class="panel">
+          <div class="book-title">
+            <div>
+              <h2>마법봉 도감</h2>
+              <p>강화 단계에 따라 새로운 마법봉이 해금됩니다.</p>
+            </div>
+            <strong id="bookCount">1 / 9</strong>
+          </div>
+
+          <div class="grade-filter">
+            <button class="filter active" data-grade="ALL">전체</button>
+            <button class="filter" data-grade="E">E</button>
+            <button class="filter" data-grade="D">D</button>
+            <button class="filter" data-grade="C">C</button>
+            <button class="filter" data-grade="B">B</button>
+            <button class="filter" data-grade="A">A</button>
+            <button class="filter" data-grade="S">S</button>
+            <button class="filter" data-grade="SS">SS</button>
+            <button class="filter" data-grade="SSS">SSS</button>
+          </div>
+
+          <div id="collection" class="collection"></div>
+        </section>
+
+        <section id="optionPanel" class="panel">
+          <div class="option-card">
+            <h2>랜덤 옵션</h2>
+            <p>강화 성공 시 일정 확률로 옵션이 붙습니다.</p>
+
+            <div id="optionList" class="option-list"></div>
+
+            <button id="rerollBtn" class="main-button purple">
+              💎 옵션 재설정 <small>보석 30</small>
+            </button>
+          </div>
+
+          <div class="option-help">
+            <b>옵션 종류</b>
+            <p>클릭 수익 증가 / 자동 수익 증가 / 성공률 보너스 / 골드 획득량 증가</p>
+          </div>
+        </section>
+      </section>
+
+    </main>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
